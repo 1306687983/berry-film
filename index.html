@@ -969,8 +969,13 @@
       <!-- 《海渊之子》正式片：H.264 + AAC 立体声，建议佩戴耳机 -->
       <!-- 去掉下载：controlsList=nodownload + 禁用右键另存 + 隐藏原生下载按钮 -->
       <video id="trailerVideo" controls controlsList="nodownload" disableRemotePlayback
-             playsinline preload="none" poster="hero-cover.jpg" src="trailer.mp4"
-             oncontextmenu="return false;"></video>
+             playsinline preload="none" poster="hero-cover.jpg"
+             oncontextmenu="return false;">
+        <!-- 国内加速镜像（支持 Range 边下边播）；失败自动回退到本地/原生 -->
+        <source src="https://gh-proxy.com/https://raw.githubusercontent.com/1306687983/berry-film/main/trailer.mp4" type="video/mp4">
+        <source src="https://ghfast.top/https://raw.githubusercontent.com/1306687983/berry-film/main/trailer.mp4" type="video/mp4">
+        <source src="trailer.mp4" type="video/mp4">
+      </video>
     </div>
   </div>
 
