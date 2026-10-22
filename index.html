@@ -751,7 +751,7 @@
 
       <!-- 点击海怪眼眸 → 播放《海渊之子》 -->
       <div class="bigvideo" id="heroPlayer" role="button" tabindex="0" aria-label="播放《海渊之子》电影概念预告片">
-        <img id="heroImg" src="hero-cover.jpg" alt="海渊之子 · 沧龙眼眸">
+        <img id="heroImg" src="hero-cover.jpg" alt="海渊之子 · 沧龙眼眸" fetchpriority="high">
         <div class="play-badge">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
         </div>
@@ -971,9 +971,7 @@
       <video id="trailerVideo" controls controlsList="nodownload" disableRemotePlayback
              playsinline preload="none" poster="hero-cover.jpg"
              oncontextmenu="return false;">
-        <!-- 国内加速镜像（支持 Range 边下边播）；失败自动回退到本地/原生 -->
-        <source src="https://gh-proxy.com/https://raw.githubusercontent.com/1306687983/berry-film/main/trailer.mp4" type="video/mp4">
-        <source src="https://ghfast.top/https://raw.githubusercontent.com/1306687983/berry-film/main/trailer.mp4" type="video/mp4">
+        <!-- 仅用本地文件：不依赖任何境外代理（gh-proxy / ghfast / raw.githubusercontent 均已移除），避免被墙与额外延迟 -->
         <source src="trailer.mp4" type="video/mp4">
       </video>
     </div>
