@@ -126,7 +126,7 @@
   .hero .links a{color:var(--blue);text-decoration:none;font-size:17px}
   .hero .links a:hover{text-decoration:underline}
 
-  /* 极简竖线分隔导航（置于发邮件 / 下载 PDF 下方） */
+  /* 极简竖线分隔导航（置于发邮件下方） */
   .hero-nav{margin-top:24px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap}
   .nav-item{
     position:relative;background:none;border:0;cursor:pointer;font-family:inherit;
@@ -702,6 +702,7 @@
     <div class="inner">
       <div class="logo" data-go="top">BERRY</div>
       <span class="spacer"></span>
+      <a class="contact" href="#" id="openPhone">联系我</a>
     </div>
   </nav>
 
@@ -717,6 +718,9 @@
     <div class="eyebrow">作品呈现</div>
     <h1>BERRY</h1>
     <div class="role">商业影像导演 · 资深商业摄影主管 · 视觉工程专家</div>
+    <div class="links">
+      <a href="#" id="openEmail">发邮件 ›</a>
+    </div>
     <!-- 极简竖线分隔导航 -->
     <nav class="hero-nav">
       <button class="nav-item" data-go="skill">技能</button>
@@ -823,6 +827,43 @@
   </section>
 
   <footer>© 2026<i>·</i><span class="ft-brand">贝瑞 <b>BERRY</b></span><i>·</i>作品内容呈现</footer>
+
+  <!-- 邮箱联系卡（点「发邮件」打开） -->
+  <div class="contact-modal" id="emailModal" aria-hidden="true">
+    <div class="contact-mask" data-close></div>
+    <div class="contact-wrap">
+      <button class="contact-x" data-close aria-label="关闭">×</button>
+      <div class="contact-card">
+        <div class="mesh"></div>
+        <div class="contact-body">
+          <div class="cc-avatar"><img src="avatar.jpg" alt="berry 头像"></div>
+          <div class="cc-name">berry</div>
+          <div class="cc-value" id="mailText">berryisfalth@foxmail.com</div>
+        </div>
+        <button class="cc-copy" data-copy="berryisfalth@foxmail.com">复制</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 电话 / 微信联系卡（点「联系我」打开） -->
+  <div class="contact-modal" id="phoneModal" aria-hidden="true">
+    <div class="contact-mask" data-close></div>
+    <div class="contact-wrap">
+      <button class="contact-x" data-close aria-label="关闭">×</button>
+      <div class="contact-card">
+        <div class="mesh"></div>
+        <div class="contact-body">
+          <div class="cc-avatar"><img src="avatar.jpg" alt="berry 头像"></div>
+          <div class="cc-name">berry</div>
+          <div class="cc-value" id="phoneText">130 7167 5131</div>
+          <div class="cc-chip"><i></i>微信同步</div>
+        </div>
+        <button class="cc-copy" data-copy="13071675131">复制</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="copy-toast" id="copyToast">已复制</div>
 
   <!-- 预告片播放弹窗 -->
   <div class="modal" id="modal" aria-hidden="true">
@@ -985,6 +1026,68 @@
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
   })();
 
+  /* 联系卡：发邮件 → 邮箱卡；联系我 → 电话/微信卡。文本可选中，另带一键复制 */
+  (function(){
+    const emailModal=document.getElementById('emailModal');
+    const phoneModal=document.getElementById('phoneModal');
+    const toast=document.getElementById('copyToast');
+    let tId=null;
+
+    function open(m){
+      if(!m) return;
+      m.classList.add('open');
+      m.setAttribute('aria-hidden','false');
+      document.body.classList.add('locked2');
+    }
+    function close(m){
+      if(!m) return;
+      m.classList.remove('open');
+      m.setAttribute('aria-hidden','true');
+      document.body.classList.remove('locked2');
+    }
+
+    const oe=document.getElementById('openEmail');
+    const op=document.getElementById('openPhone');
+    if(oe) oe.addEventListener('click',e=>{ e.preventDefault(); open(emailModal); });
+    if(op) op.addEventListener('click',e=>{ e.preventDefault(); open(phoneModal); });
+
+    [emailModal,phoneModal].forEach(m=>{
+      if(!m) return;
+      m.querySelectorAll('[data-close]').forEach(el=>{
+        el.addEventListener('click',()=>close(m));
+      });
+    });
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape'){ close(emailModal); close(phoneModal); }
+    });
+
+    function showToast(msg){
+      if(!toast) return;
+      toast.textContent=msg;
+      toast.classList.add('show');
+      clearTimeout(tId);
+      tId=setTimeout(()=>toast.classList.remove('show'),1800);
+    }
+
+    document.querySelectorAll('[data-copy]').forEach(btn=>{
+      btn.addEventListener('click',async ()=>{
+        const txt=btn.getAttribute('data-copy');
+        try{
+          if(navigator.clipboard && navigator.clipboard.writeText){
+            await navigator.clipboard.writeText(txt);
+          }else{
+            const ta=document.createElement('textarea');
+            ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+            document.body.appendChild(ta); ta.select();
+            document.execCommand('copy'); ta.remove();
+          }
+          showToast('已复制  ' + txt);
+        }catch(err){
+          showToast('复制失败，请手动选择文本');
+        }
+      });
+    });
+  })();
 </script>
 <script>
 /* 顶部三张小视频：3D 封面流——三张紧贴，每 3 秒自动换位置；
