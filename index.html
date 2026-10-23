@@ -739,13 +739,13 @@
     <div class="showcase">
       <div class="vrow" id="vrow">
         <div class="vmini pos-center" data-i="0">
-          <video class="vm" muted loop playsinline preload="metadata" poster="poster1.jpg" src="v1.mp4"></video>
+          <video class="vm" muted loop playsinline disablePictureInPicture disableRemotePlayback preload="metadata" poster="poster1.jpg" src="v1.mp4"></video>
         </div>
         <div class="vmini pos-right" data-i="1">
-          <video class="vm" muted loop playsinline preload="metadata" poster="poster2.jpg" src="v2.mp4"></video>
+          <video class="vm" muted loop playsinline disablePictureInPicture disableRemotePlayback preload="metadata" poster="poster2.jpg" src="v2.mp4"></video>
         </div>
         <div class="vmini pos-left" data-i="2">
-          <video class="vm" muted loop playsinline preload="metadata" poster="poster3.jpg" src="v3.mp4"></video>
+          <video class="vm" muted loop playsinline disablePictureInPicture disableRemotePlayback preload="metadata" poster="poster3.jpg" src="v3.mp4"></video>
         </div>
       </div>
 
@@ -968,7 +968,7 @@
       <button class="modal-close" aria-label="关闭">×</button>
       <!-- 《海渊之子》正式片：H.264 + AAC 立体声，建议佩戴耳机 -->
       <!-- 去掉下载：controlsList=nodownload + 禁用右键另存 + 隐藏原生下载按钮 -->
-      <video id="trailerVideo" controls controlsList="nodownload" disableRemotePlayback
+      <video id="trailerVideo" controls controlsList="nodownload" disablePictureInPicture disableRemotePlayback
              playsinline preload="none" poster="hero-cover.jpg"
              oncontextmenu="return false;">
         <!-- 仅用本地文件：不依赖任何境外代理（gh-proxy / ghfast / raw.githubusercontent 均已移除），避免被墙与额外延迟 -->
