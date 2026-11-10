@@ -198,6 +198,155 @@
   /* 3D 视差由 JS 逐帧写入 transform，故这里只保留滤镜过渡 */
   .bigvideo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:filter .55s var(--ease);will-change:transform}
   .bigvideo:hover img{filter:brightness(1.10)}
+  /* 作品轨道（桌面）：主片 + 右侧探边 */
+  .film-stage{position:relative;display:flex;align-items:stretch;gap:18px;width:100%}
+  .film-stage .bigvideo{flex:1 1 auto;width:auto;min-width:0}
+  .film-peek{
+    position:relative;flex:0 0 12.4%;min-width:104px;padding:0;margin:0;border:0;cursor:pointer;
+    border-radius:22px;overflow:hidden;background:#0b0c0e;outline:none;
+    box-shadow:0 22px 50px -30px rgba(0,0,0,.95);
+    transition:transform .5s cubic-bezier(.16,.84,.28,1),box-shadow .5s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  /* 悬停只做视觉反馈：绝不改宽度（改宽度会把左边视频挤压变形） */
+  .film-peek:hover{transform:translateY(-2px);box-shadow:0 26px 56px -28px rgba(0,0,0,1)}
+  .film-peek:focus-visible{box-shadow:0 0 0 2px rgba(45,212,191,.55)}
+  .film-peek img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:52% 50%;
+    filter:brightness(.5) saturate(.85) blur(.4px);
+    transition:filter .5s ease,transform .8s cubic-bezier(.16,.84,.28,1),opacity .34s ease;
+  }
+  .film-peek:hover img{filter:brightness(.74) saturate(1);transform:scale(1.04)}
+  .film-peek .peek-veil{
+    position:absolute;inset:0;
+    background:linear-gradient(90deg,rgba(8,9,11,.92),rgba(8,9,11,.24) 42%,rgba(8,9,11,.42));
+  }
+  .film-peek .peek-title{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:46%;max-width:52px;height:auto;
+    filter:drop-shadow(0 6px 16px rgba(0,0,0,.8));
+    transition:transform .55s cubic-bezier(.16,.84,.28,1),filter .5s ease,opacity .32s ease;
+  }
+  .film-peek:hover .peek-title{transform:translate(-50%,-50%) scale(1.06);filter:drop-shadow(0 8px 20px rgba(0,0,0,.85)) brightness(1.06)}
+  .film-peek .peek-hint{
+    position:absolute;left:0;right:0;bottom:14px;text-align:center;
+    font-size:10px;letter-spacing:.16em;color:rgba(255,255,255,.62);
+  }
+  .film-peek .peek-hint em{display:block;font-style:normal;font-size:8px;letter-spacing:.3em;opacity:.6;margin-top:3px}
+
+  /* 缩略图样式（仅手机显示，见媒体查询） */
+  .film-thumbs{display:none;justify-content:center;gap:16px;margin:20px auto 0;padding:0 var(--pad)}
+
+  /* 作品缩略图：视频下方两条扁长卡片，当前这版亮、另一版压暗 */
+  /* 作品缩略图：手机端视频下方两条扁长卡片 */
+  .thumb{
+    position:relative;width:268px;height:94px;padding:0;border:0;border-radius:10px;overflow:hidden;
+    background:#0b0c0e;cursor:pointer;outline:none;
+    box-shadow:0 12px 30px -18px rgba(0,0,0,.9),inset 0 0 0 1px rgba(255,255,255,.07);
+    transition:transform .4s var(--ease),box-shadow .4s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .thumb img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 42%;
+    filter:brightness(.5) saturate(.35) blur(.4px);
+    transition:filter .45s ease,transform .8s cubic-bezier(.16,.84,.28,1);
+  }
+  .thumb::after{
+    content:"";position:absolute;inset:0;background:rgba(4,6,8,.60);
+    transition:opacity .45s ease;pointer-events:none;
+  }
+  .thumb.on::after{opacity:0}
+  .thumb:hover::after{opacity:.32}
+  .thumb .th-name{
+    position:absolute;left:0;right:0;bottom:0;padding:15px 15px 11px;text-align:left;z-index:2;
+    font-size:14px;font-weight:600;letter-spacing:.16em;color:rgba(255,255,255,.66);
+    background:linear-gradient(to top,rgba(5,6,8,.95) 30%,rgba(5,6,8,.55) 65%,transparent);
+    transition:color .4s ease;
+  }
+  .thumb .th-name em{
+    display:block;font-style:normal;font-size:7.5px;font-weight:400;letter-spacing:.26em;
+    text-transform:uppercase;opacity:.55;margin-top:3px;
+  }
+  .thumb:hover img{filter:brightness(.72) saturate(.7) blur(0)}
+  .thumb:hover{transform:translateY(-2px)}
+  .thumb.on{
+    box-shadow:0 14px 34px -16px rgba(0,0,0,.95),
+               inset 0 0 0 1.5px rgba(45,212,191,.9),
+               0 0 26px -8px rgba(45,212,191,.5);
+  }
+  .thumb.on img{filter:brightness(1.04) saturate(1) blur(0)}
+  .thumb.on .th-name{color:#f2fffd}
+  .thumb.on .th-name em{opacity:.7}
+  .thumb:focus-visible{box-shadow:0 0 0 2px rgba(45,212,191,.6)}
+
+  /* ===== 作品切换点（胶囊，桌面） ===== */
+  .film-dots{
+    position:relative;z-index:8;display:flex;justify-content:center;align-items:center;
+    gap:11px;margin:30px auto 0;padding:0 var(--pad);
+  }
+  .film-dots:before{
+    content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:168px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);
+    pointer-events:none;
+  }
+  .fd{
+    position:relative;width:30px;height:6px;padding:0;border:0;border-radius:99px;cursor:pointer;
+    background:rgba(255,255,255,.24);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+    transition:width .46s cubic-bezier(.16,.84,.28,1),background .46s ease,box-shadow .46s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .fd:hover{background:rgba(255,255,255,.34)}
+  .fd:focus-visible{outline:none;box-shadow:0 0 0 2px rgba(45,212,191,.55)}
+  .fd.on{
+    width:62px;
+    background:linear-gradient(90deg,#2dd4bf,#7ce7d8);
+    box-shadow:0 0 16px rgba(45,212,191,.55),inset 0 1px 0 rgba(255,255,255,.5);
+  }
+  .fd-name{
+    position:absolute;left:50%;bottom:16px;transform:translate(-50%,4px);
+    white-space:nowrap;font-size:11px;letter-spacing:.14em;color:#d4d7db;
+    padding:4px 10px;border-radius:9px;
+    background:rgba(9,11,13,.82);border:1px solid rgba(255,255,255,.10);
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    opacity:0;pointer-events:none;
+    transition:opacity .26s ease,transform .26s cubic-bezier(.16,.84,.28,1);
+  }
+  .fd:hover .fd-name,.fd:focus-visible .fd-name{opacity:1;transform:translate(-50%,0)}
+  .fd.on .fd-name{color:#eafffb}
+
+  /* 切换过渡层：整页从右侧（或左侧）推进来（外面套一层裁剪，飞不出去） */
+  .film-clip{
+    position:absolute;left:0;top:0;bottom:0;right:calc(18px + 12.4%);
+    border-radius:22px;overflow:hidden;z-index:9;pointer-events:none;
+    box-shadow:-40px 0 80px -44px rgba(0,0,0,.95);
+  }
+  .film-slide{
+    position:absolute;inset:0;
+    border-radius:22px;overflow:hidden;background:#0b0c0e;
+    pointer-events:none;opacity:0;transform:translate3d(0,0,0);
+    box-shadow:-40px 0 80px -44px rgba(0,0,0,.95);
+    will-change:transform,opacity;
+    transition:transform .78s cubic-bezier(.22,.61,.16,1),opacity .26s ease;
+  }
+  /* 摆位阶段（关掉过渡，避免一帧闪回） */
+  .film-slide.arm{transition:none}
+  .film-slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .film-slide::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:34%;pointer-events:none;
+    background:linear-gradient(to top,rgba(0,0,0,.58),rgba(0,0,0,.24) 48%,transparent);
+  }
+  .film-slide .bigcap{opacity:1}
+  /* 切换过程中隐去旧页文字，避免被新页切一半 */
+  .bigvideo.switching .bigcap,
+  .bigvideo.switching .dv-label,
+  .bigvideo.switching .poster-label{opacity:0;transition:opacity .16s ease}
+
+  /* 底部压暗：保证白色标题在任意封面（含手机小尺寸）上都读得清 */
+  .bigvideo::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:34%;z-index:4;pointer-events:none;
+    background:linear-gradient(to top,rgba(0,0,0,.58),rgba(0,0,0,.24) 48%,transparent);
+  }
 
   /* 播放按钮：微透玻璃拟物（磨砂 + 纯白三角），悬停柔和白金色/冷青呼吸光晕 + scale 1.08 */
   .play-badge{
@@ -235,11 +384,15 @@
   }
   .bigvideo:hover .play-badge::before{opacity:1;transform:scale(1.16);animation:breathe 3.4s ease-in-out infinite}
   @keyframes breathe{0%,100%{opacity:.5;transform:scale(1.12)}50%{opacity:1;transform:scale(1.26)}}
-  .bigvideo .bigcap{position:absolute;left:24px;bottom:22px;color:#fff;font-size:23px;font-weight:600;text-shadow:0 2px 12px rgba(0,0,0,.85);z-index:5;letter-spacing:.02em;line-height:1.25;transform:translate3d(var(--cgx,0px),var(--cgy,0px),0)}
-  .bigvideo .bigcap .en{display:block;font-style:normal;font-size:11px;font-weight:400;letter-spacing:.24em;text-transform:uppercase;opacity:.72;margin-top:6px}
+  .bigvideo .bigcap,
+  .film-slide .bigcap{position:absolute;left:24px;bottom:22px;color:#fff;font-size:23px;font-weight:600;text-shadow:0 2px 12px rgba(0,0,0,.85);z-index:5;letter-spacing:.02em;line-height:1.25;transform:translate3d(var(--cgx,0px),var(--cgy,0px),0)}
+  .bigvideo .bigcap .en,
+  .film-slide .bigcap .en{display:block;font-style:normal;font-size:11px;font-weight:400;letter-spacing:.24em;text-transform:uppercase;opacity:.72;margin-top:6px}
   /* 悬浮玻璃标签：向两侧错开，3D 悬浮透视 */
   .bigvideo .dv-label,
-  .bigvideo .poster-label{
+  .bigvideo .poster-label,
+  .film-slide .dv-label,
+  .film-slide .poster-label{
     position:absolute;color:#fff;font-weight:600;z-index:5;
     padding:9px 14px;border-radius:14px;
     background:linear-gradient(180deg,rgba(12,14,17,.54),rgba(8,9,11,.36));
@@ -249,16 +402,23 @@
     text-shadow:0 1px 8px rgba(0,0,0,.8);
     transition:transform .28s var(--ease),box-shadow .55s,border-color .4s;
   }
-  .bigvideo .dv-label{left:6px;bottom:108px;font-size:12px;letter-spacing:.08em;transform:translate3d(var(--lgx,0px),var(--lgy,0px),0) perspective(760px) rotateY(7deg) translateZ(18px)}
-  .bigvideo .poster-label{right:calc(6% + 25px);bottom:12px;font-size:13px;letter-spacing:.05em;transform:translate3d(var(--lgx,0px),var(--lgy,0px),0) perspective(760px) rotateY(-7deg) translateZ(26px)}
+  .bigvideo .dv-label,
+  .film-slide .dv-label{left:6px;bottom:108px;font-size:12px;letter-spacing:.08em;transform:translate3d(var(--lgx,0px),var(--lgy,0px),0) perspective(760px) rotateY(7deg) translateZ(18px)}
+  .bigvideo .poster-label,
+  .film-slide .poster-label{right:calc(6% + 25px);bottom:12px;font-size:13px;letter-spacing:.05em;transform:translate3d(var(--lgx,0px),var(--lgy,0px),0) perspective(760px) rotateY(-7deg) translateZ(26px)}
   .bigvideo:hover .dv-label{transform:translate3d(var(--lgx,0px),var(--lgy,0px),0) perspective(760px) rotateY(7deg) translateZ(32px) translateY(-5px);border-color:rgba(45,212,191,.5)}
   .bigvideo:hover .poster-label{transform:translate3d(var(--lgx,0px),var(--lgy,0px),0) perspective(760px) rotateY(-7deg) translateZ(40px) translateY(-5px);border-color:rgba(45,212,191,.5)}
   .dv-label em,.poster-label em{display:block;font-style:normal;font-size:9px;font-weight:400;letter-spacing:.26em;opacity:.6;margin-top:2px}
 
+  /* 大视频切换过渡 */
+  .bigvideo img{transition:filter .55s var(--ease),opacity .42s ease}
+
   /* 导演落款 */
+  .hero-credit.fading{opacity:0}
   .hero-credit{
     max-width:var(--maxw);margin:14px auto 0;padding:0 var(--pad);
     text-align:center;color:#8b8b93;font-size:12.5px;letter-spacing:.04em;
+    transition:opacity .24s ease;
   }
 
   /* ===== 01 核心优势 ===== */
@@ -600,17 +760,18 @@
     .hero h1 .h1-en{font-size:.38em}
     .hero .eyebrow{font-size:15px}
     .hero .role{font-size:15.5px;line-height:1.6}
-    .hero .meta{font-size:12px;line-height:1.7;margin-top:14px}
+    .hero .meta{font-size:10.5px;line-height:1.7;margin-top:14px}
     .hero .links{gap:18px;margin-top:24px}
     .hero .links a{font-size:16px}
-    .hero-credit{font-size:10px;letter-spacing:.02em;line-height:1.8;margin-top:10px;padding:0 18px}
+    /* 手机端这行说明直接不显示：两部片名长度不同会换行，把下面排版顶下去 */
+    .hero-credit{display:none}
     .sec-head{margin-bottom:32px}
     .sec-head h2{font-size:clamp(24px,7vw,32px)}
     .sec-head .lead{font-size:15px}
     .card{padding:20px;border-radius:16px}
     .adv-list{gap:16px}
-    .adv-list .k{font-size:14px}
-    .adv-list p{font-size:14.5px;line-height:1.75}
+    .adv-list .k{font-size:12.8px}
+    .adv-list p{font-size:12px;line-height:1.8}
     .kw span{font-size:13px;padding:8px 13px}
     .job-time{font-size:14px;padding:8px 12px;flex-wrap:wrap}
     .job .role{font-size:16.5px}
@@ -633,14 +794,18 @@
     .jobs-grid.cols-3 > .job:nth-child(3){--i:2}
     .jobs-grid.cols-3 > .job.is-front{opacity:1;filter:none;z-index:3}
     .jobs-grid.cols-3 > .job:not(.is-front){opacity:.68;filter:brightness(.62) saturate(.9);z-index:1}
-    .skill h4{font-size:16px}
-    .skill p{font-size:13.5px}
+    .skill h4{font-size:14px}
+    .skill p{font-size:12px}
     .eng-row{padding:18px;gap:16px;border-radius:18px}
     .eng-tag{font-size:10.5px}
     .eng-text h3{font-size:20px}
     .eng-text p{font-size:14.5px;margin-top:10px}
-    .bigvideo .bigcap{font-size:14.5px;left:14px;bottom:12px;line-height:1.32;max-width:calc(100% - 28px);text-shadow:0 2px 10px rgba(0,0,0,.9),0 0 22px rgba(0,0,0,.75)}
-    .bigvideo .bigcap .en{font-size:8px;letter-spacing:.16em;margin-top:5px}
+    .bigvideo .bigcap{font-size:13px;left:13px;bottom:11px;line-height:1.28;max-width:60%;text-shadow:0 2px 10px rgba(0,0,0,.9),0 0 22px rgba(0,0,0,.75)}
+    .film-slide .bigcap{font-size:13px;left:13px;bottom:11px;line-height:1.28;max-width:60%;text-shadow:0 2px 10px rgba(0,0,0,.9),0 0 22px rgba(0,0,0,.75)}
+    .bigvideo .bigcap .en{display:none}
+    .bigvideo .bigcap .cap-sub{display:none}
+    .film-slide .bigcap .en{display:none}
+    .film-slide .bigcap .cap-sub{display:none}
     footer{padding:30px 20px 34px}
     .feature-shell{padding:0;margin:64px auto 0;max-width:calc(100% - var(--pad) * 2)}
     .feature-shell::before{top:-20px}
@@ -670,13 +835,25 @@
     .vmini.pos-right{transform:translateX(108px) translateZ(-10px) scale(.86) rotateY(-30deg)}
     .bigvideo{border-radius:14px}
     .bigvideo .dv-label{left:6px;top:auto;bottom:91px;width:82px;font-size:7.5px;padding:3px 4px;border-radius:6px;text-align:center;letter-spacing:.02em;white-space:nowrap;transform:perspective(640px) rotateY(15deg);box-shadow:0 3px 9px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);border-color:rgba(255,255,255,.2)}
+    .film-slide .dv-label{left:6px;top:auto;bottom:91px;width:82px;font-size:7.5px;padding:3px 4px;border-radius:6px;text-align:center;letter-spacing:.02em;white-space:nowrap;transform:perspective(640px) rotateY(15deg);box-shadow:0 3px 9px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);border-color:rgba(255,255,255,.2)}
     .bigvideo .poster-label{right:6px;bottom:8px;top:auto;left:auto;width:82px;font-size:8.5px;padding:4px 5px;border-radius:7px;text-align:center;letter-spacing:.02em;white-space:nowrap;transform:perspective(640px) rotateY(-15deg);box-shadow:0 3px 9px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);border-color:rgba(255,255,255,.2)}
+    .film-slide .poster-label{right:6px;bottom:8px;top:auto;left:auto;width:82px;font-size:8.5px;padding:4px 5px;border-radius:7px;text-align:center;letter-spacing:.02em;white-space:nowrap;transform:perspective(640px) rotateY(-15deg);box-shadow:0 3px 9px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);border-color:rgba(255,255,255,.2)}
     .bigvideo .dv-label em{font-size:5px;letter-spacing:.05em;margin-top:1px}
     .bigvideo .poster-label em{font-size:5.5px;letter-spacing:.06em;margin-top:1px}
     .eng-row{grid-template-columns:1fr;gap:16px}
     .play-badge{width:44px;height:44px}
     .play-badge svg{width:14px;height:14px;margin-left:2px}
     .modal-box{width:min(1040px,96vw)}
+    /* 手机：不放侧边条，改成视频下方的缩略图；胶囊点隐藏 */
+    .film-stage{display:block}
+    .film-stage .bigvideo{width:100%}
+    .film-peek{display:none}
+    .film-dots{display:none}
+    .film-thumbs{display:flex;gap:9px;margin:12px auto 0}
+    .thumb{width:132px;height:48px;border-radius:7px}
+    .thumb .th-name{font-size:10px;letter-spacing:.08em;padding:10px 8px 8px}
+    .thumb .th-name em{font-size:5.5px;letter-spacing:.18em;margin-top:1px}
+    .film-clip{right:0;border-radius:13px}
   }
   @media(prefers-reduced-motion:reduce){
     html{scroll-behavior:auto}
@@ -750,18 +927,63 @@
       </div>
 
       <!-- 点击海怪眼眸 → 播放《海渊之子》 -->
-      <div class="bigvideo" id="heroPlayer" role="button" tabindex="0" aria-label="播放《海渊之子》电影概念预告片">
-        <img id="heroImg" src="hero-cover.jpg" alt="海渊之子 · 沧龙眼眸" fetchpriority="high">
-        <div class="play-badge">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <div class="film-stage">
+        <div class="bigvideo" id="heroPlayer" role="button" tabindex="0" aria-label="播放《海渊之子》电影概念预告片">
+          <img id="heroImg" src="hero-cover.jpg" alt="海渊之子 · 沧龙眼眸" fetchpriority="high">
+          <div class="play-badge">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <span class="bigcap" id="heroCap"><span class="cap-main">《海渊之子》</span><span class="cap-sub"> · 电影概念预告片</span><em class="en">THE SON OF THE DEEP — Concept Trailer</em></span>
+          <span class="dv-label">工程交付<em>POST-PRODUCTION</em></span>
+          <span class="poster-label">概念海报<em>CONCEPT POSTER</em></span>
         </div>
-        <span class="bigcap">《海渊之子》· 电影概念预告片<em class="en">THE SON OF THE DEEP — Concept Trailer</em></span>
-        <span class="dv-label">工程交付<em>POST-PRODUCTION</em></span>
-        <span class="poster-label">概念海报<em>CONCEPT POSTER</em></span>
+
+        <!-- 切换时整页推进来的「下一页」（JS 控制） -->
+        <div class="film-clip" aria-hidden="true">
+          <div class="film-slide" id="filmSlide">
+            <img id="slideImg" src="glitch-cover.jpg" alt="">
+            <span class="bigcap" id="slideCap"></span>
+            <span class="dv-label">工程交付<em>POST-PRODUCTION</em></span>
+            <span class="poster-label">概念海报<em>CONCEPT POSTER</em></span>
+          </div>
+        </div>
+
+        <!-- 桌面：右侧探边，露出下一部作品 -->
+        <button class="film-peek" id="filmPeek" type="button" aria-label="切换到下一部作品">
+          <img id="peekImg" src="glitch-cover.jpg" alt="">
+          <span class="peek-veil"></span>
+          <img class="peek-title" id="peekName" src="peek-title-glitch.png" alt="超能失控">
+          <span class="peek-hint">下一部<em>NEXT</em></span>
+        </button>
+
       </div>
     </div>
   </div>
-  <p class="hero-credit">《海渊之子》50 秒电影概念预告片 · 建议佩戴耳机获得最佳全轨拟音体验</p>
+  <!-- 手机：视频下方缩略图（桌面隐藏） -->
+  <div class="film-thumbs" id="filmThumbs" role="tablist" aria-label="作品切换">
+    <button class="thumb on" type="button" role="tab" aria-selected="true" data-i="0">
+      <img src="hero-cover.jpg" alt="">
+      <span class="th-name">海渊之子<em>The Son of the Deep</em></span>
+    </button>
+    <button class="thumb" type="button" role="tab" aria-selected="false" data-i="1">
+      <img src="glitch-cover.jpg" alt="">
+      <span class="th-name">超能失控<em>Glitch Squad</em></span>
+    </button>
+  </div>
+
+  <p class="hero-credit" id="heroCredit">《海渊之子》50 秒电影概念预告片 · 建议佩戴耳机获得最佳全轨拟音体验</p>
+
+  <!-- 桌面：两个胶囊切换点（手机隐藏） -->
+  <div class="film-dots" id="filmDots" role="tablist" aria-label="作品切换">
+    <button class="fd on" type="button" role="tab" aria-selected="true" data-i="0" aria-label="海渊之子">
+      <span class="fd-name">海渊之子</span>
+    </button>
+    <button class="fd" type="button" role="tab" aria-selected="false" data-i="1" aria-label="超能失控">
+      <span class="fd-name">超能失控</span>
+    </button>
+  </div>
+
+
 
   <!-- 01 核心优势（冷青 Teal） -->
   <section id="intro" class="band band-01" data-nav="intro">
@@ -1094,6 +1316,175 @@
       kick();
     });
     box.addEventListener('mouseleave',()=>{ tx=0; ty=0; ts=1; kick(); });
+  })();
+
+  /* ===== 作品切换：海渊之子 / 超能失控 ===== */
+  const FILMS=[
+    {
+      key:'deep',
+      short:'海渊之子',
+      img:'hero-cover.jpg',
+      alt:'海渊之子 · 沧龙眼眸',
+      capMain:'《海渊之子》', capSub:'电影概念预告片',
+      en:'THE SON OF THE DEEP — Concept Trailer',
+      credit:'《海渊之子》50 秒电影概念预告片 · 建议佩戴耳机获得最佳全轨拟音体验',
+      video:'trailer.mp4',
+      aria:'播放《海渊之子》电影概念预告片'
+    },
+    {
+      key:'glitch',
+      short:'超能失控',
+      img:'glitch-cover.jpg',
+      alt:'超能失控 · Glitch Squad',
+      capMain:'《超能失控》', capSub:'校园超能力概念短片',
+      en:'GLITCH SQUAD — E-Waste Showdown',
+      credit:'《超能失控》Glitch Squad: E-Waste Showdown — 67 秒校园超能力概念短片',
+      video:'glitch.mp4',
+      aria:'播放《超能失控》校园超能力概念短片'
+    }
+  ];
+  let currentFilm=0;
+
+  (function(){
+    const box=document.getElementById('heroPlayer');
+    const img=document.getElementById('heroImg');
+    const cap=document.getElementById('heroCap');
+    const credit=document.getElementById('heroCredit');
+    const thumbs=[...document.querySelectorAll('.thumb')];
+    const dots=[...document.querySelectorAll('.fd')];
+    const peek=document.getElementById('filmPeek');
+    const peekImg=document.getElementById('peekImg');
+    const peekName=document.getElementById('peekName');
+    if(!box||!img||(!thumbs.length&&!dots.length)) return;
+    let busy=false;
+
+    const slide=document.getElementById('filmSlide');
+    const slideImg=document.getElementById('slideImg');
+    const slideCap=document.getElementById('slideCap');
+
+    /* 片名：主标题 +（桌面端才显示的）副题 + 英文 */
+    function fillCap(el,film){
+      el.innerHTML='';
+      const m=document.createElement('span'); m.className='cap-main'; m.textContent=film.capMain;
+      const sub=document.createElement('span'); sub.className='cap-sub'; sub.textContent=' · '+film.capSub;
+      const em=document.createElement('em'); em.className='en'; em.textContent=film.en;
+      el.appendChild(m); el.appendChild(sub); el.appendChild(em);
+    }
+
+    /* 桌面探边：始终显示「下一部」 */
+    function syncPeek(){
+      if(!peek) return;
+      const next=FILMS[(currentFilm+1)%FILMS.length];
+      peek.setAttribute('aria-label','切换到《'+next.short+'》');
+      peekImg.style.opacity='0';
+      peekName.style.opacity='0';
+      setTimeout(()=>{
+        peekImg.src=next.img;
+        peekImg.alt=next.alt;
+        peekName.src='peek-title-'+next.key+'.png';
+        peekName.alt=next.short;
+        peekImg.style.opacity='1';
+        peekName.style.opacity='1';
+      },150);
+    }
+
+    /* 把某一部的信息落到主面板上（过渡结束后执行，肉眼看不到接缝） */
+    function commit(i){
+      const film=FILMS[i];
+      img.src=film.img;
+      img.alt=film.alt;
+      fillCap(cap,film);
+      credit.textContent=film.credit;
+      box.setAttribute('aria-label',film.aria);
+      const v=document.getElementById('trailerVideo');
+      if(v){ v.pause(); try{ v.currentTime=0; }catch(e){} v.setAttribute('src',film.video); v.setAttribute('poster',film.img); }
+    }
+
+    /* 切换 = 另一页整屏推进来（右侧来 / 左侧来），旧页往反方向退后压暗 */
+    function setFilm(i){
+      if(busy||i===currentFilm) return;
+      busy=true;
+      const dir = i>currentFilm ? 1 : -1;
+      const film = FILMS[i];
+
+      slideImg.src=film.img;
+      slideImg.alt=film.alt;
+      fillCap(slideCap,film);
+
+      /* ① 新页摆到屏幕外（关过渡防闪帧） */
+      slide.classList.add('arm');
+      slide.style.opacity='1';
+      slide.style.transform='translate3d('+(dir>0?100:-100)+'%,0,0)';
+      slide.getBoundingClientRect();
+
+      /* ② 纯横向划过来：只做 X 位移，不缩放任何一层，起步快、尾巴慢慢合上 */
+      slide.classList.remove('arm');
+      slide.style.transform='translate3d(0,0,0)';
+      box.classList.add('switching');
+      credit.classList.add('fading');
+      if(peek){ peek.style.transition='opacity .4s ease'; peek.style.opacity='.35'; }
+
+      currentFilm=i;
+      thumbs.forEach((t,k)=>{
+        t.classList.toggle('on',k===i);
+        t.setAttribute('aria-selected',k===i?'true':'false');
+      });
+      dots.forEach((d,k)=>{
+        d.classList.toggle('on',k===i);
+        d.setAttribute('aria-selected',k===i?'true':'false');
+      });
+
+      /* ③ 完全合上后，在被遮住的瞬间换底层内容，再抽掉过渡层 */
+      setTimeout(()=>{
+        commit(i);
+        box.classList.remove('switching');
+        credit.classList.remove('fading');
+        requestAnimationFrame(()=>{
+          slide.style.opacity='0';
+          if(peek) peek.style.opacity='';
+        });
+        syncPeek();
+        setTimeout(()=>{ busy=false; },240);
+      },800);
+    }
+
+    if(peek) peek.addEventListener('click',()=>setFilm((currentFilm+1)%FILMS.length));
+
+    dots.forEach((d,i)=>{
+      d.addEventListener('click',()=>setFilm(i));
+      d.addEventListener('keydown',e=>{
+        if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+          e.preventDefault();
+          setFilm((currentFilm+1)%FILMS.length);
+        }
+      });
+    });
+
+    /* 手机端：在大视频上左右横滑切换（纵向滚动不受影响，轻点仍然是播放） */
+    let sx=null, sy=null;
+    box.addEventListener('touchstart',e=>{
+      if(e.touches.length!==1) return;
+      sx=e.touches[0].clientX; sy=e.touches[0].clientY;
+    },{passive:true});
+    box.addEventListener('touchend',e=>{
+      if(sx===null) return;
+      const t=e.changedTouches[0];
+      const dx=t.clientX-sx, dy=t.clientY-sy;
+      sx=null;
+      if(Math.abs(dx)>44 && Math.abs(dx)>Math.abs(dy)*1.3){
+        setFilm(dx<0 ? (currentFilm+1)%FILMS.length : (currentFilm-1+FILMS.length)%FILMS.length);
+      }
+    },{passive:true});
+
+    thumbs.forEach((t,i)=>{
+      t.addEventListener('click',()=>setFilm(i));
+      t.addEventListener('keydown',e=>{
+        if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+          e.preventDefault();
+          setFilm((currentFilm+1)%FILMS.length);
+        }
+      });
+    });
   })();
 
   /* 进场动画 */
