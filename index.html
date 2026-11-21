@@ -580,6 +580,15 @@
     transition:transform .45s var(--ease),opacity .35s;
   }
   .modal.open .modal-box{transform:none;opacity:1}
+  /* 画质切换 */
+  .quality-row{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:10px 14px 12px;background:#080a0c;border-top:1px solid rgba(255,255,255,.08)}
+  .quality-row .ql{font-size:10px;letter-spacing:.18em;color:rgba(255,255,255,.42);margin-right:auto}
+  .q-btn{padding:5px 14px;border-radius:99px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);
+    color:rgba(255,255,255,.6);font-size:11px;letter-spacing:.1em;cursor:pointer;transition:all .3s;
+    -webkit-tap-highlight-color:transparent}
+  .q-btn:hover{border-color:rgba(45,212,191,.5);color:#eafffb}
+  .q-btn.on{background:rgba(45,212,191,.16);border-color:rgba(45,212,191,.75);color:#eafffb;box-shadow:0 0 14px -3px rgba(45,212,191,.5)}
+  .q-btn:focus-visible{outline:none;box-shadow:0 0 0 2px rgba(45,212,191,.6)}
   .modal-box video{display:block;width:100%;height:auto;background:#000}
   /* 彻底隐藏原生下载入口 */
   .modal-box video::-internal-media-controls-download-button{display:none !important}
@@ -1199,8 +1208,13 @@
              playsinline preload="none" poster="glitch-cover.jpg"
              oncontextmenu="return false;">
         <!-- 仅用本地文件：不依赖任何境外代理（gh-proxy / ghfast / raw.githubusercontent 均已移除），避免被墙与额外延迟 -->
-        <source src="glitch.mp4" type="video/mp4">
+        <source src="glitch-mid.mp4" type="video/mp4">
       </video>
+      <div class="quality-row">
+        <span class="ql">画质 / QUALITY</span>
+        <button class="q-btn on" type="button" data-q="mid" aria-label="中码率，更流畅">中</button>
+        <button class="q-btn" type="button" data-q="high" aria-label="最高码率，最清晰">高清</button>
+      </div>
     </div>
   </div>
 
@@ -1333,7 +1347,7 @@
       capMain:'《超能失控》', capSub:'校园超能力概念短片',
       en:'GLITCH SQUAD — E-Waste Showdown',
       credit:'《超能失控》Glitch Squad: E-Waste Showdown — 67 秒校园超能力概念短片',
-      video:'glitch.mp4',
+      video:'glitch.mp4', videoMid:'glitch-mid.mp4',
       aria:'播放《超能失控》校园超能力概念短片'
     },
     {
@@ -1344,7 +1358,7 @@
       capMain:'《福田临界》', capSub:'深圳城市危机概念短片',
       en:'FUTIAN: THE THRESHOLD',
       credit:'《福田临界》83 秒深圳城市危机概念短片 · 当城市越过边界',
-      video:'monster.mp4',
+      video:'monster.mp4', videoMid:'monster-mid.mp4',
       aria:'播放《福田临界》深圳城市危机概念短片'
     },
     {
@@ -1355,11 +1369,12 @@
       capMain:'《海渊之子》', capSub:'电影概念预告片',
       en:'THE SON OF THE DEEP — Concept Trailer',
       credit:'《海渊之子》50 秒电影概念预告片 · 建议佩戴耳机获得最佳全轨拟音体验',
-      video:'trailer.mp4',
+      video:'trailer.mp4', videoMid:'trailer-mid.mp4',
       aria:'播放《海渊之子》电影概念预告片'
     }
   ];
   let currentFilm=0;
+  let currentQuality='mid';   /* 默认中码率，想看细节再点高清 */
 
   (function(){
     const box=document.getElementById('heroPlayer');
@@ -1413,7 +1428,7 @@
       credit.textContent=film.credit;
       box.setAttribute('aria-label',film.aria);
       const v=document.getElementById('trailerVideo');
-      if(v){ v.pause(); try{ v.currentTime=0; }catch(e){} v.setAttribute('src',film.video); v.setAttribute('poster',film.img); }
+      if(v){ v.pause(); try{ v.currentTime=0; }catch(e){} v.setAttribute('src',currentQuality==='high'?film.video:(film.videoMid||film.video)); v.setAttribute('poster',film.img); }
     }
 
     /* 切换 = 另一页整屏推进来（右侧来 / 左侧来），旧页往反方向退后压暗 */
@@ -1530,6 +1545,20 @@
       document.body.classList.remove('locked');
       try{ video.pause(); }catch(e){}
     }
+    const qBtns=[...document.querySelectorAll('.q-btn')];
+    function applyQuality(q){
+      if(q===currentQuality) return;
+      currentQuality=q;
+      qBtns.forEach(b=>b.classList.toggle('on',b.dataset.q===q));
+      const film=FILMS[currentFilm];
+      const t=video.currentTime, wasPlaying=!video.paused;
+      try{ video.pause(); }catch(e){}
+      video.setAttribute('src',q==='high'?film.video:(film.videoMid||film.video));
+      try{ video.load(); video.currentTime=t; }catch(e){}
+      if(wasPlaying){ const pp=video.play(); if(pp&&pp.catch) pp.catch(()=>{}); }
+    }
+    qBtns.forEach(b=>b.addEventListener('click',()=>applyQuality(b.dataset.q)));
+
     player.addEventListener('click',open);
     player.addEventListener('keydown',e=>{
       if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); }
