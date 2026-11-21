@@ -589,6 +589,16 @@
   .q-btn:hover{border-color:rgba(45,212,191,.5);color:#eafffb}
   .q-btn.on{background:rgba(45,212,191,.16);border-color:rgba(45,212,191,.75);color:#eafffb;box-shadow:0 0 14px -3px rgba(45,212,191,.5)}
   .q-btn:focus-visible{outline:none;box-shadow:0 0 0 2px rgba(45,212,191,.6)}
+  /* 画质切换中：旧画面继续播，遮罩只盖视频区域 */
+  .quality-loading{
+    position:absolute;left:0;right:0;top:0;bottom:52px;display:none;
+    align-items:center;justify-content:center;gap:10px;z-index:2;pointer-events:none;
+    background:rgba(4,6,8,.46);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
+    color:#eafffb;font-size:12px;letter-spacing:.14em;text-shadow:0 2px 10px rgba(0,0,0,.8);
+  }
+  .quality-loading.on{display:flex}
+  .q-spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.24);border-top-color:#2dd4bf;animation:qspin .7s linear infinite}
+  @keyframes qspin{to{transform:rotate(360deg)}}
   .modal-box video{display:block;width:100%;height:auto;background:#000}
   /* 彻底隐藏原生下载入口 */
   .modal-box video::-internal-media-controls-download-button{display:none !important}
@@ -1114,6 +1124,10 @@
         <!-- 仅用本地文件：不依赖任何境外代理（gh-proxy / ghfast / raw.githubusercontent 均已移除），避免被墙与额外延迟 -->
         <source src="glitch-mid.mp4" type="video/mp4">
       </video>
+      <div class="quality-loading" id="qLoading" aria-hidden="true">
+        <span class="q-spin"></span><span>画质切换中…</span>
+      </div>
+      <video id="qualityPreload" preload="auto" muted playsinline aria-hidden="true" style="display:none"></video>
       <div class="quality-row">
         <span class="ql">画质 / QUALITY</span>
         <button class="q-btn on" type="button" data-q="mid" aria-label="中码率，更流畅">中</button>
@@ -1440,16 +1454,50 @@
       try{ video.pause(); }catch(e){}
     }
     const qBtns=[...document.querySelectorAll('.q-btn')];
+    const qLoading=document.getElementById('qLoading');
+    const preload=document.getElementById('qualityPreload');
+    let switching=false;
+
+    /* A 方案：旧视频继续播 → 新画质后台预载 → 就绪后在同一秒数接上 */
     function applyQuality(q){
-      if(q===currentQuality) return;
-      currentQuality=q;
-      qBtns.forEach(b=>b.classList.toggle('on',b.dataset.q===q));
+      if(q===currentQuality||switching) return;
       const film=FILMS[currentFilm];
+      const nextSrc=q==='high'?film.video:(film.videoMid||film.video);
       const t=video.currentTime, wasPlaying=!video.paused;
-      try{ video.pause(); }catch(e){}
-      video.setAttribute('src',q==='high'?film.video:(film.videoMid||film.video));
-      try{ video.load(); video.currentTime=t; }catch(e){}
-      if(wasPlaying){ const pp=video.play(); if(pp&&pp.catch) pp.catch(()=>{}); }
+      switching=true;
+
+      qBtns.forEach(b=>b.classList.toggle('on',b.dataset.q===q));   /* 先给出反馈 */
+      if(qLoading) qLoading.classList.add('on');
+
+      let done=false;
+      function finish(){
+        if(done) return;
+        done=true;
+        currentQuality=q;
+        try{
+          video.pause();
+          video.setAttribute('src',nextSrc);
+          video.load();
+          if(t>0) video.currentTime=Math.min(t,Math.max(0,(video.duration||t)-0.2));
+        }catch(e){}
+        const hide=()=>{
+          qLoading.classList.remove('on');
+          switching=false;
+          video.removeEventListener('playing',hide);
+          video.removeEventListener('canplay',hide);
+        };
+        video.addEventListener('playing',hide,{once:true});
+        video.addEventListener('canplay',hide,{once:true});
+        if(wasPlaying){ const pp=video.play(); if(pp&&pp.catch) pp.catch(()=>{}); }
+        setTimeout(hide,2600);   /* 兜底：某些浏览器不派事件 */
+      }
+      if(preload){
+        preload.addEventListener('canplay',finish,{once:true});
+        preload.addEventListener('error',finish,{once:true});
+        preload.setAttribute('src',nextSrc);
+        try{ preload.load(); }catch(e){}
+      }else finish();
+      setTimeout(finish,4000);   /* 网络太慢也不能一直转圈 */
     }
     qBtns.forEach(b=>b.addEventListener('click',()=>applyQuality(b.dataset.q)));
 
