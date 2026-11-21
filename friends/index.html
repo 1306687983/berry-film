@@ -920,12 +920,12 @@
 
       <!-- 点击海怪眼眸 → 播放《海渊之子》 -->
       <div class="film-stage">
-        <div class="bigvideo" id="heroPlayer" role="button" tabindex="0" aria-label="播放《海渊之子》电影概念预告片">
-          <img id="heroImg" src="hero-cover.jpg" alt="海渊之子 · 沧龙眼眸" fetchpriority="high">
+        <div class="bigvideo" id="heroPlayer" role="button" tabindex="0" aria-label="播放《超能失控》校园超能力概念短片">
+          <img id="heroImg" src="glitch-cover.jpg" alt="超能失控 · Glitch Squad" fetchpriority="high">
           <div class="play-badge">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
           </div>
-          <span class="bigcap" id="heroCap"><span class="cap-main">《海渊之子》</span><span class="cap-sub"> · 电影概念预告片</span><em class="en">THE SON OF THE DEEP — Concept Trailer</em></span>
+          <span class="bigcap" id="heroCap"><span class="cap-main">《超能失控》</span><span class="cap-sub"> · 校园超能力概念短片</span><em class="en">GLITCH SQUAD — E-Waste Showdown</em></span>
           <span class="dv-label">工程交付<em>POST-PRODUCTION</em></span>
           <span class="poster-label">概念海报<em>CONCEPT POSTER</em></span>
         </div>
@@ -933,7 +933,7 @@
         <!-- 切换时整页推进来的「下一页」（JS 控制） -->
         <div class="film-clip" aria-hidden="true">
           <div class="film-slide" id="filmSlide">
-            <img id="slideImg" src="glitch-cover.jpg" alt="">
+            <img id="slideImg" src="futian-cover.jpg" alt="">
             <span class="bigcap" id="slideCap"></span>
             <span class="dv-label">工程交付<em>POST-PRODUCTION</em></span>
             <span class="poster-label">概念海报<em>CONCEPT POSTER</em></span>
@@ -942,9 +942,9 @@
 
         <!-- 桌面：右侧探边，露出下一部作品 -->
         <button class="film-peek" id="filmPeek" type="button" aria-label="切换到下一部作品">
-          <img id="peekImg" src="glitch-cover.jpg" alt="">
+          <img id="peekImg" src="futian-cover.jpg" alt="">
           <span class="peek-veil"></span>
-          <img class="peek-title" id="peekName" src="peek-title-glitch.png" alt="超能失控">
+          <img class="peek-title" id="peekName" src="peek-title-futian.png" alt="福田临界">
           <span class="peek-hint">下一部<em>NEXT</em></span>
         </button>
 
@@ -954,31 +954,31 @@
   <!-- 手机：视频下方缩略图（桌面隐藏） -->
   <div class="film-thumbs" id="filmThumbs" role="tablist" aria-label="作品切换">
     <button class="thumb on" type="button" role="tab" aria-selected="true" data-i="0">
-      <img src="hero-cover.jpg" alt="">
-      <span class="th-name">海渊之子<em>The Son of the Deep</em></span>
-    </button>
-    <button class="thumb" type="button" role="tab" aria-selected="false" data-i="1">
       <img src="glitch-cover.jpg" alt="">
       <span class="th-name">超能失控<em>Glitch Squad</em></span>
     </button>
-    <button class="thumb" type="button" role="tab" aria-selected="false" data-i="2">
+    <button class="thumb" type="button" role="tab" aria-selected="false" data-i="1">
       <img src="futian-cover.jpg" alt="">
       <span class="th-name">福田临界<em>Futian: The Threshold</em></span>
     </button>
+    <button class="thumb" type="button" role="tab" aria-selected="false" data-i="2">
+      <img src="hero-cover.jpg" alt="">
+      <span class="th-name">海渊之子<em>The Son of the Deep</em></span>
+    </button>
   </div>
 
-  <p class="hero-credit" id="heroCredit">《海渊之子》50 秒电影概念预告片 · 建议佩戴耳机获得最佳全轨拟音体验</p>
+  <p class="hero-credit" id="heroCredit">《超能失控》Glitch Squad: E-Waste Showdown — 67 秒校园超能力概念短片</p>
 
   <!-- 桌面：两个胶囊切换点（手机隐藏） -->
   <div class="film-dots" id="filmDots" role="tablist" aria-label="作品切换">
-    <button class="fd on" type="button" role="tab" aria-selected="true" data-i="0" aria-label="海渊之子">
-      <span class="fd-name">海渊之子</span>
-    </button>
-    <button class="fd" type="button" role="tab" aria-selected="false" data-i="1" aria-label="超能失控">
+    <button class="fd on" type="button" role="tab" aria-selected="true" data-i="0" aria-label="超能失控">
       <span class="fd-name">超能失控</span>
     </button>
-    <button class="fd" type="button" role="tab" aria-selected="false" data-i="2" aria-label="福田临界">
+    <button class="fd" type="button" role="tab" aria-selected="false" data-i="1" aria-label="福田临界">
       <span class="fd-name">福田临界</span>
+    </button>
+    <button class="fd" type="button" role="tab" aria-selected="false" data-i="2" aria-label="海渊之子">
+      <span class="fd-name">海渊之子</span>
     </button>
   </div>
 
@@ -1097,13 +1097,13 @@
     <div class="modal-mask"></div>
     <div class="modal-box">
       <button class="modal-close" aria-label="关闭">×</button>
-      <!-- 《海渊之子》正式片：H.264 + AAC 立体声，建议佩戴耳机 -->
+      <!-- 《超能失控》正式片：H.264 + AAC 立体声，建议佩戴耳机 -->
       <!-- 去掉下载：controlsList=nodownload + 禁用右键另存 + 隐藏原生下载按钮 -->
       <video id="trailerVideo" controls controlsList="nodownload" disablePictureInPicture disableRemotePlayback
-             playsinline preload="none" poster="hero-cover.jpg"
+             playsinline preload="none" poster="glitch-cover.jpg"
              oncontextmenu="return false;">
         <!-- 仅用本地文件：不依赖任何境外代理（gh-proxy / ghfast / raw.githubusercontent 均已移除），避免被墙与额外延迟 -->
-        <source src="trailer.mp4" type="video/mp4">
+        <source src="glitch.mp4" type="video/mp4">
       </video>
     </div>
   </div>
@@ -1220,17 +1220,6 @@
   /* ===== 作品切换：海渊之子 / 超能失控 ===== */
   const FILMS=[
     {
-      key:'deep',
-      short:'海渊之子',
-      img:'hero-cover.jpg',
-      alt:'海渊之子 · 沧龙眼眸',
-      capMain:'《海渊之子》', capSub:'电影概念预告片',
-      en:'THE SON OF THE DEEP — Concept Trailer',
-      credit:'《海渊之子》50 秒电影概念预告片 · 建议佩戴耳机获得最佳全轨拟音体验',
-      video:'trailer.mp4',
-      aria:'播放《海渊之子》电影概念预告片'
-    },
-    {
       key:'glitch',
       short:'超能失控',
       img:'glitch-cover.jpg',
@@ -1251,6 +1240,17 @@
       credit:'《福田临界》83 秒深圳城市危机概念短片 · 当城市越过边界',
       video:'monster.mp4',
       aria:'播放《福田临界》深圳城市危机概念短片'
+    },
+    {
+      key:'deep',
+      short:'海渊之子',
+      img:'hero-cover.jpg',
+      alt:'海渊之子 · 沧龙眼眸',
+      capMain:'《海渊之子》', capSub:'电影概念预告片',
+      en:'THE SON OF THE DEEP — Concept Trailer',
+      credit:'《海渊之子》50 秒电影概念预告片 · 建议佩戴耳机获得最佳全轨拟音体验',
+      video:'trailer.mp4',
+      aria:'播放《海渊之子》电影概念预告片'
     }
   ];
   let currentFilm=0;
