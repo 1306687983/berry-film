@@ -240,7 +240,7 @@
   /* 作品缩略图：视频下方两条扁长卡片，当前这版亮、另一版压暗 */
   /* 作品缩略图：手机端视频下方两条扁长卡片 */
   .thumb{
-    position:relative;width:268px;height:94px;padding:0;border:0;border-radius:10px;overflow:hidden;
+    position:relative;width:244px;height:90px;padding:0;border:0;border-radius:10px;overflow:hidden;
     background:#0b0c0e;cursor:pointer;outline:none;
     box-shadow:0 12px 30px -18px rgba(0,0,0,.9),inset 0 0 0 1px rgba(255,255,255,.07);
     transition:transform .4s var(--ease),box-shadow .4s ease;
@@ -847,8 +847,8 @@
     .film-stage .bigvideo{width:100%}
     .film-peek{display:none}
     .film-dots{display:none}
-    .film-thumbs{display:flex;gap:9px;margin:12px auto 0}
-    .thumb{width:132px;height:48px;border-radius:7px}
+    .film-thumbs{display:flex;gap:8px;margin:12px auto 0}
+    .thumb{width:auto;flex:1 1 0;min-width:0;max-width:132px;height:48px;border-radius:7px}
     .thumb .th-name{font-size:10px;letter-spacing:.08em;padding:10px 8px 8px}
     .thumb .th-name em{font-size:5.5px;letter-spacing:.18em;margin-top:1px}
     .film-clip{right:0;border-radius:13px}
@@ -967,6 +967,10 @@
       <img src="glitch-cover.jpg" alt="">
       <span class="th-name">超能失控<em>Glitch Squad</em></span>
     </button>
+    <button class="thumb" type="button" role="tab" aria-selected="false" data-i="2">
+      <img src="monster-cover.jpg" alt="">
+      <span class="th-name">深圳怪兽<em>Shenzhen Monster</em></span>
+    </button>
   </div>
 
   <p class="hero-credit" id="heroCredit">《海渊之子》50 秒电影概念预告片 · 建议佩戴耳机获得最佳全轨拟音体验</p>
@@ -978,6 +982,9 @@
     </button>
     <button class="fd" type="button" role="tab" aria-selected="false" data-i="1" aria-label="超能失控">
       <span class="fd-name">超能失控</span>
+    </button>
+    <button class="fd" type="button" role="tab" aria-selected="false" data-i="2" aria-label="深圳怪兽">
+      <span class="fd-name">深圳怪兽</span>
     </button>
   </div>
 
@@ -1339,6 +1346,17 @@
       credit:'《超能失控》Glitch Squad: E-Waste Showdown — 67 秒校园超能力概念短片',
       video:'glitch.mp4',
       aria:'播放《超能失控》校园超能力概念短片'
+    },
+    {
+      key:'monster',
+      short:'深圳怪兽',
+      img:'monster-cover.jpg',
+      alt:'深圳怪兽 · Shenzhen Monster',
+      capMain:'《深圳怪兽》', capSub:'城市怪兽概念短片',
+      en:'SHENZHEN MONSTER — Concept Short',
+      credit:'《深圳怪兽》83 秒城市怪兽概念短片 · 建议佩戴耳机获得最佳音效体验',
+      video:'monster.mp4',
+      aria:'播放《深圳怪兽》城市怪兽概念短片'
     }
   ];
   let currentFilm=0;
